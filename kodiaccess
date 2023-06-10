@@ -1,0 +1,98 @@
+if uname -a|grep -iqw linux;then
+export plat=linux
+else
+export plat=osx
+fi
+if [ $plat = linux ];then
+if which kodi > /dev/null 2>/dev/null;then
+export flatpak=0
+else
+if which flatpak > /dev/null 2>/dev/null;then
+while true;do
+if flatpak install -y kodi;then
+break
+else
+continue
+fi
+done
+export flatpak=1
+else
+export missingreqs=$missingreqs" "flatpak
+fi
+if [ $flatpak = 1 ];then
+if flatpak list|grep -qw kodi;then
+sleep .01
+else
+export missingreqs=$missingreqs" "kodi
+fi
+fi
+fi
+if which git > /dev/null 2>/dev/null;then
+sleep .01
+else
+export missingreqs=$missingreqs" "git
+fi
+if which sqlite3 > /dev/null 2>/dev/null;then
+sleep .01
+else
+export missingreqs=$missingreqs" "sqlite3
+fi
+if [ -z $missingreqs ];then
+sleep .01
+else
+echo "the following requirements are missing: " $missingreqs
+exit 48
+fi
+if [ $flatpak = 1 ];then
+export kodipath=~/.var/app/tv.kodi.Kodi/data
+else
+export kodipath=~/.kodi
+fi
+mkdir -p $kodipath/addons $kodipath/userdata/addon_data/service.xbmc.tts $kodipath/userdata/keymaps
+cd $kodipath/addons
+git clone --recursive https://github.com/dnl-nash/service.xbmc.tts
+cd $kodipath
+cp addons/service.xbmc.tts/resources/settings.xml userdata/addon_data/service.xbmc.tts
+cp addons/service.xbmc.tts/resources/keymap.base.xml userdata/keymaps/service.xbmc.tts.keyboard.xml
+cd
+if [ $flatpak = 1 ];then
+flatpak run tv.kodi.Kodi > /dev/null 2>/dev/null&
+else
+kodi > /dev/null 2>/dev/null&
+fi
+sleep 10
+killall -9 kodi kodi.bin
+sqlite3 $kodipath/userdata/Database/Addons33.db 'update installed set enabled=1 where enabled=0;'
+exit
+else
+while true;do
+if xcode-select -p > /dev/null 2>/dev/null;then
+break
+else
+xcode-select --install
+continue
+fi
+done
+if [ -e /Applications/Kodi.app/Contents/MacOS/Kodi ];then
+sleep .01
+else
+curl -Lo kodi.dmg https://mirrors.kodi.tv/releases/osx/x86_64/kodi-20.1-Nexus-x86_64.dmg
+hdiutil attach kodi.dmg
+cp -rf /Volumes/kodi/Kodi.app /Applications/
+diskutil unmount /Volumes/Kodi
+rm kodi.dmg
+fi
+mkdir -p ~/Library/Application\ Support/Kodi/addons ~/Library/Application\ Support/Kodi/userdata/addon_data/service.xbmc.tts ~/Library/Application\ Support/Kodi/userdata/keymaps
+cd ~/Library/Application\ Support/Kodi/addons
+git clone https://github.com/pvagner/service.xbmc.tts -b 2to3
+cd ~/Library/Application\ Support/Kodi/addons/service.xbmc.tts/lib
+git clone https://github.com/pvagner/backends -b 2to3
+cd ~/Library/Application\ Support/Kodi
+cp addons/service.xbmc.tts/resources/settings.xml userdata/addon_data/service.xbmc.tts
+cp addons/service.xbmc.tts/resources/keymap.base.xml userdata/keymaps/service.xbmc.tts.keyboard.xml
+open /Applications/kodi.app&
+sleep 10
+killall -9 Kodi
+sqlite3 userdata/Database/Addons33.db 'update installed set enabled=1 where enabled=0;'
+exit
+fi
