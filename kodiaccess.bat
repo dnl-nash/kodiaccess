@@ -20,7 +20,9 @@ goto ttsinstall
 :ttsinstall
 mkdir %appdata%\kodi\addons %appdata%\kodi\userdata\addon_data\service.xbmc.tts %appdata%\kodi\userdata\keymaps
 cd %appdata%\kodi\addons
-%git% clone --recursive https://github.com/dnl-nash/service.xbmc.tts -b 2to3
+%git% clone https://github.com/dnl-nash/service.xbmc.tts
+cd service.xbmc.tts/lib
+%git% clone https://github.com/dnl-nash/backends
 cd %appdata%\kodi
 copy addons\service.xbmc.tts\resources\settings.xml userdata\addon_data\service.xbmc.tts
 copy addons\service.xbmc.tts\resources\keymap.base.xml userdata\keymaps\service.xbmc.tts.keyboard.xml

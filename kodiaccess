@@ -84,9 +84,7 @@ rm kodi.dmg
 fi
 mkdir -p ~/Library/Application\ Support/Kodi/addons ~/Library/Application\ Support/Kodi/userdata/addon_data/service.xbmc.tts ~/Library/Application\ Support/Kodi/userdata/keymaps
 cd ~/Library/Application\ Support/Kodi/addons
-git clone https://github.com/pvagner/service.xbmc.tts -b 2to3
-cd ~/Library/Application\ Support/Kodi/addons/service.xbmc.tts/lib
-git clone https://github.com/pvagner/backends -b 2to3
+git clone --recursive https://github.com/dnl-nash/service.xbmc.tts
 cd ~/Library/Application\ Support/Kodi
 cp addons/service.xbmc.tts/resources/settings.xml userdata/addon_data/service.xbmc.tts
 cp addons/service.xbmc.tts/resources/keymap.base.xml userdata/keymaps/service.xbmc.tts.keyboard.xml
