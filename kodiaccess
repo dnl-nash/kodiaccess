@@ -76,7 +76,11 @@ done
 if [ -e /Applications/Kodi.app/Contents/MacOS/Kodi ];then
 sleep .01
 else
-curl -Lo kodi.dmg https://mirrors.kodi.tv/releases/osx/x86_64/kodi-20.1-Nexus-x86_64.dmg
+if uname -m|grep -qw x86_64;then
+curl -Lo kodi.dmg https://mirrors.kodi.tv/releases/osx/x86_64/kodi-21.1-Omega-x86_64.dmg
+else
+curl -Lo kodi.dmg https://mirrors.kodi.tv/releases/osx/arm64/kodi-21.1-Omega-arm64.dmg
+fi
 hdiutil attach kodi.dmg
 cp -rf /Volumes/kodi/Kodi.app /Applications/
 diskutil unmount /Volumes/Kodi
