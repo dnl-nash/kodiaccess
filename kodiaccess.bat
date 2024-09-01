@@ -13,7 +13,7 @@ goto main
 :main
 if exist "c:\Program Files\Kodi\kodi.exe" goto :ttsinstall else goto :dlkodi
 :dlkodi
-curl -Lo kodiinst.exe https://mirrors.kodi.tv/releases/windows/win64/kodi-20.1-Nexus-x64.exe
+curl -Lo kodiinst.exe https://mirrors.kodi.tv/releases/windows/win64/kodi-21.1-Omega-x64.exe
 kodiinst.exe /S
 del kodiinst.exe
 goto ttsinstall
